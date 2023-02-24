@@ -82,6 +82,8 @@ void UTP_WeaponComponent::AttachWeapon(ASmartCompanionCharacter* TargetCharacter
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 		GetOwner()->AttachToComponent(Character->GetMesh(), AttachmentRules, FName(TEXT("GripPoint")));
 
+		Character->SetBattleStateFlag(true);
+
 		// Register so that Fire is called every time the character tries to use the item being held
 		Character->OnUseItem.AddDynamic(this, &UTP_WeaponComponent::Fire);
 	}

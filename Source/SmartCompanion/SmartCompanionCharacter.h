@@ -29,6 +29,13 @@ class ASmartCompanionCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, Category = "Flags")
+	bool BattleStateFlag = false;
+
+	UPROPERTY(VisibleAnywhere, Category = "Flags")
+	bool StealthStateFlag = false;
+
 public:
 	ASmartCompanionCharacter();
 
@@ -39,6 +46,21 @@ public:
 	/** Delegate to whom anyone can subscribe to receive this event */
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnUseItem OnUseItem;
+
+	UFUNCTION(BlueprintCallable)
+	bool GetBattleStateFlag();
+
+	UFUNCTION(BlueprintCallable)
+	void SetBattleStateFlag(bool val);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetStealthStateFlag();
+
+	UFUNCTION(BlueprintCallable)
+	void StealthActivate();
+
+	UFUNCTION(BlueprintCallable)
+	void StealthDeactivate();
 
 protected:
 	/** Fires a projectile. */
@@ -73,27 +95,6 @@ protected:
 	// End of APawn interface
 
 	void Tick(float DeltaTime);
-
-	struct TouchData
-	{
-		TouchData() { bIsPressed = false; Location = FVector::ZeroVector; }
-		bool bIsPressed;
-		ETouchIndex::Type FingerIndex;
-		FVector Location;
-		bool bMoved;
-	};
-	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
-	TouchData	TouchItem;
-
-	/*
-	* Configures input for touchscreen devices if there is a valid touch interface for doing so
-	*
-	* @param	InputComponent	The input component pointer to bind controls to
-	* @returns true if touch controls were enabled.
-	*/
-	bool EnableTouchscreenMovement(UInputComponent* InputComponent);
 
 public:
 	/** Returns CameraBoom subobject **/

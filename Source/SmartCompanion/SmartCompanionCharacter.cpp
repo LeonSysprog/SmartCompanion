@@ -66,6 +66,8 @@ void ASmartCompanionCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Stealth", IE_Pressed, this, &ASmartCompanionCharacter::StealthActivate);
+	PlayerInputComponent->BindAction("Stealth", IE_Released, this, &ASmartCompanionCharacter::StealthDeactivate);
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ASmartCompanionCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &ASmartCompanionCharacter::MoveRight);
@@ -88,32 +90,6 @@ void ASmartCompanionCharacter::OnPrimaryAction()
 {
 	// Trigger the OnItemUsed Event
 	OnUseItem.Broadcast();
-}
-
-
-void ASmartCompanionCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == true)
-	{
-		return;
-	}
-	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
-	{
-		OnPrimaryAction();
-	}
-	TouchItem.bIsPressed = true;
-	TouchItem.FingerIndex = FingerIndex;
-	TouchItem.Location = Location;
-	TouchItem.bMoved = false;
-}
-
-void ASmartCompanionCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == false)
-	{
-		return;
-	}
-	TouchItem.bIsPressed = false;
 }
 
 void ASmartCompanionCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
@@ -154,7 +130,7 @@ void ASmartCompanionCharacter::MoveForward(float Value)
 
 void ASmartCompanionCharacter::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if ((Controller != nullptr) && (Value != 0.0f) )
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -167,21 +143,32 @@ void ASmartCompanionCharacter::MoveRight(float Value)
 	}
 }
 
-bool ASmartCompanionCharacter::EnableTouchscreenMovement(class UInputComponent* PlayerInputComponent)
-{
-
-	if (FPlatformMisc::SupportsTouchInput() || GetDefault<UInputSettings>()->bUseMouseForTouch)
-	{
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ASmartCompanionCharacter::BeginTouch);
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Released, this, &ASmartCompanionCharacter::EndTouch);
-
-		return true;
-	}
-
-	return false;
-}
-
 void ASmartCompanionCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+bool ASmartCompanionCharacter::GetBattleStateFlag()
+{
+	return BattleStateFlag;
+}
+
+void ASmartCompanionCharacter::SetBattleStateFlag(bool val)
+{
+	BattleStateFlag = val;
+}
+
+bool ASmartCompanionCharacter::GetStealthStateFlag()
+{
+	return StealthStateFlag;
+}
+
+void ASmartCompanionCharacter::StealthActivate()
+{
+	StealthStateFlag = true;
+}
+
+void ASmartCompanionCharacter::StealthDeactivate()
+{
+	StealthStateFlag = false;
 }
