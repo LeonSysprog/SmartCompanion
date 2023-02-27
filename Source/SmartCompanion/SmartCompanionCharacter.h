@@ -2,6 +2,14 @@
 
 #pragma once
 
+#pragma comment(lib, "E:\\portaudio\\build\\Release\\portaudio_static_x64.lib")
+#pragma comment(lib, "E:\\vosk-api-master\\wheelhouse\\vosk-win64\\libvosk.lib")
+
+THIRD_PARTY_INCLUDES_START
+#include "E:\portaudio\include\portaudio.h"
+#include "E:\vosk-api-master\wheelhouse\vosk-win64\vosk_api.h"
+THIRD_PARTY_INCLUDES_END
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "SmartCompanionCharacter.generated.h"
@@ -36,8 +44,16 @@ class ASmartCompanionCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, Category = "Flags")
 	bool StealthStateFlag = false;
 
+	/** speech recognition vars **/
+	VoskModel* model;
+	VoskRecognizer* recognizer;
+	PaStream* stream;
+	std::string data;
+
+
 public:
 	ASmartCompanionCharacter();
+	~ASmartCompanionCharacter();
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
@@ -101,5 +117,9 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	
+	void InitializeSpeechRecognition();
+	void TickSpeechRecognition();
+	void FreeSpeechRecognition();
 };
 

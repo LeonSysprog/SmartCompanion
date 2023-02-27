@@ -3,3 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+class SmartCompanionModule : public IModuleInterface
+{
+	public:
+		virtual void StartupModule() override;
+		virtual void ShutdownModule() override;
+
+		void* DynamicLibVoskHandle;
+		void* DynamicLibPortAudioHandle;
+};
