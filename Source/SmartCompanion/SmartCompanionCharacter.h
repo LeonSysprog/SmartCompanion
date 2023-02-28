@@ -45,6 +45,7 @@ class ASmartCompanionCharacter : public ACharacter
 	bool StealthStateFlag = false;
 
 	/** speech recognition vars **/
+
 	VoskModel* model;
 	VoskRecognizer* recognizer;
 	PaStream* stream;

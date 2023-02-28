@@ -9,6 +9,6 @@ public class SmartCompanionEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("SmartCompanion");
+        ExtraModuleNames.Add("SmartCompanion");
 	}
 }

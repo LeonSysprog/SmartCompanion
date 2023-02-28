@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-class SmartCompanionModule : public IModuleInterface
+class SmartCompanionModule : public FDefaultGameModuleImpl
 {
 	public:
 		virtual void StartupModule() override;

@@ -226,6 +226,7 @@ void ASmartCompanionCharacter::MoveRight(float Value)
 void ASmartCompanionCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	TickSpeechRecognition();
 }
 
 bool ASmartCompanionCharacter::GetBattleStateFlag()

@@ -9,6 +9,6 @@ public class SmartCompanionTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("SmartCompanion");
+        ExtraModuleNames.Add("SmartCompanion");
 	}
 }
