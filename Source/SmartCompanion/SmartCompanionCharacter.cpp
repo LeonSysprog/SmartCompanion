@@ -15,79 +15,6 @@
 //////////////////////////////////////////////////////////////////////////
 // ASmartCompanionCharacter
 
-void ASmartCompanionCharacter::InitializeSpeechRecognition()
-{
-	model = vosk_model_new("E:\\Vosk\\vosk-model-small-en-us-0.15");
-	recognizer = vosk_recognizer_new(model, 16000.0);
-
-	PaError err;
-
-	err = Pa_Initialize();
-	if (Pa_Initialize() != paNoError)
-	{
-		UE_LOG(LogTemp, Display, TEXT("Pa_Initialize: "), Pa_GetErrorText(err));
-		return;
-	}
-
-	// get device info
-	PaStreamParameters inputParametrs;
-	inputParametrs.channelCount = 1;
-	inputParametrs.sampleFormat = paInt16;
-	inputParametrs.hostApiSpecificStreamInfo = NULL;
-	inputParametrs.device = Pa_GetDefaultInputDevice();
-
-	if (inputParametrs.device == paNoDevice)
-	{
-		UE_LOG(LogTemp, Display, TEXT("Pa_GetDefaultInputDevice: no device"));
-		return;
-	}
-
-	// open stream
-	err = Pa_OpenStream(&stream, &inputParametrs, NULL, 16000.0, 8192, 0, NULL, NULL);
-	if (err != paNoError)
-	{
-		UE_LOG(LogTemp, Display, TEXT("Pa_OpenStream: "), Pa_GetErrorText(err));
-		return;
-	}
-
-	// start stream
-	err = Pa_StartStream(stream);
-	if (err != paNoError)
-	{
-		UE_LOG(LogTemp, Display, TEXT("Pa_StartStream: "), Pa_GetErrorText(err));
-		return;
-	}
-}
-
-void ASmartCompanionCharacter::TickSpeechRecognition()
-{
-	PaError err;
-
-	err = Pa_ReadStream(stream, (void*)data.c_str(), 4096);
-	if (err != paNoError && err != paInputOverflowed)
-	{
-		UE_LOG(LogTemp, Display, TEXT("Pa_ReadStream: "), Pa_GetErrorText(err));
-		return;
-	}
-
-	if (vosk_recognizer_accept_waveform(recognizer, data.c_str(), sizeof(data)) == -1)
-	{
-		UE_LOG(LogTemp, Display, TEXT("vosk_recognizer_accept_waveform: error"));
-		return;
-	}
-
-	UE_LOG(LogTemp, Display, TEXT("%s"), vosk_recognizer_result(recognizer));
-
-	data.clear();
-}
-
-void ASmartCompanionCharacter::FreeSpeechRecognition()
-{
-	Pa_CloseStream(stream);
-	vosk_recognizer_free(recognizer);
-	vosk_model_free(model);
-}
-
 ASmartCompanionCharacter::ASmartCompanionCharacter()
 {
 	// Set size for collision capsule
@@ -129,12 +56,12 @@ ASmartCompanionCharacter::ASmartCompanionCharacter()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
-	InitializeSpeechRecognition();
+	speechRecognitionModule.Initialize();
 }
 
 ASmartCompanionCharacter::~ASmartCompanionCharacter()
 {
-	FreeSpeechRecognition();
+	speechRecognitionModule.Shutdown();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -226,7 +153,7 @@ void ASmartCompanionCharacter::MoveRight(float Value)
 void ASmartCompanionCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	TickSpeechRecognition();
+	speechRecognitionModule.Run();
 }
 
 bool ASmartCompanionCharacter::GetBattleStateFlag()
