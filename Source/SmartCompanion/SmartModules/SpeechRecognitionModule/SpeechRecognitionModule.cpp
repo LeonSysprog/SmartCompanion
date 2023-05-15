@@ -2,6 +2,8 @@
 #include "simpleson/json.h"
 #include <Logging/LogMacros.h>
 
+#include <memory>
+
 /**
 @Brief
 simpleson перенёс из ThirdParty из-за ошибок линковки
@@ -70,9 +72,10 @@ void SpeechRecognitionModule::Run()
 
 	auto resRegonition(vosk_recognizer_result(recognizer));
 	auto resJSON = json::jobject::parse(resRegonition);
-	FString val(resJSON.get("text").c_str());
 
-	UE_LOG(LogTemp, Display, TEXT("TEXT: %s"), *val);
+	FString textFString(resJSON.get("text").c_str());
+
+	UE_LOG(LogTemp, Display, TEXT("TEXT: %s"), *textFString);
 }
 
 void SpeechRecognitionModule::Shutdown()

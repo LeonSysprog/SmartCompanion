@@ -55,13 +55,10 @@ ASmartCompanionCharacter::ASmartCompanionCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-
-	speechRecognitionModule.Initialize();
 }
 
 ASmartCompanionCharacter::~ASmartCompanionCharacter()
 {
-	speechRecognitionModule.Shutdown();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -78,6 +75,9 @@ void ASmartCompanionCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ASmartCompanionCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &ASmartCompanionCharacter::MoveRight);
+
+	PlayerInputComponent->BindAction("Smart", IE_Pressed, this, &ASmartCompanionCharacter::SmartActivate);
+	PlayerInputComponent->BindAction("Smart", IE_Released, this, &ASmartCompanionCharacter::SmartDeactivate);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -153,7 +153,6 @@ void ASmartCompanionCharacter::MoveRight(float Value)
 void ASmartCompanionCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	speechRecognitionModule.Run();
 }
 
 bool ASmartCompanionCharacter::GetBattleStateFlag()
@@ -179,4 +178,14 @@ void ASmartCompanionCharacter::StealthActivate()
 void ASmartCompanionCharacter::StealthDeactivate()
 {
 	StealthStateFlag = false;
+}
+
+void ASmartCompanionCharacter::SmartActivate()
+{
+	commandHandler->Activate();
+}
+
+void ASmartCompanionCharacter::SmartDeactivate()
+{
+	commandHandler->Deactivate();
 }

@@ -11,8 +11,8 @@ class ASmartCompanionGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
-public:
-	ASmartCompanionGameMode();
+	public:
+		ASmartCompanionGameMode();
 };
 
 

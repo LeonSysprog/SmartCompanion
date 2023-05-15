@@ -3,6 +3,7 @@
 #pragma once
 
 #include "SmartModules/SpeechRecognitionModule/SpeechRecognitionModule.h"
+#include "Commands/CommandHandler/CommandHandler.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -38,6 +39,8 @@ class ASmartCompanionCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, Category = "Flags")
 	bool StealthStateFlag = false;
 
+	bool SmartStatusFlag = false;
+
 public:
 	ASmartCompanionCharacter();
 	~ASmartCompanionCharacter();
@@ -64,6 +67,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StealthDeactivate();
+
+	void SmartActivate();
+	void SmartDeactivate();
 
 protected:
 	/** Fires a projectile. */
@@ -100,7 +106,8 @@ protected:
 	void Tick(float DeltaTime);
 
 private:
-	SpeechRecognitionModule speechRecognitionModule;
+	//SpeechRecognitionModule speechRecognitionModule;
+	TSharedPtr<CommandHandler> commandHandler = MakeShared<CommandHandler>();
 
 public:
 	/** Returns CameraBoom subobject **/
