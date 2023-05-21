@@ -33,6 +33,10 @@ class ASmartCompanionCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
+	/** First Person camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FirstPersonCamera;
+
 	UPROPERTY(VisibleAnywhere, Category = "Flags")
 	bool BattleStateFlag = false;
 
@@ -109,10 +113,16 @@ private:
 	//SpeechRecognitionModule speechRecognitionModule;
 	TSharedPtr<CommandHandler> commandHandler = MakeShared<CommandHandler>();
 
+private:
+	void ActivateFirstPersonView();
+	void DeactivateFirstPersonView();
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	/** Returns FirstPersonCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFirstPersonCamera() const { return FirstPersonCamera; }
 };
 

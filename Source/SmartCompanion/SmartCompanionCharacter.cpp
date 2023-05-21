@@ -51,10 +51,15 @@ ASmartCompanionCharacter::ASmartCompanionCharacter()
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	FollowCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	// Create a First Person camera
+	FirstPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	FirstPersonCamera->SetupAttachment(GetMesh(), "HeadSocket");
+	FirstPersonCamera->bUsePawnControlRotation = true;
 }
 
 ASmartCompanionCharacter::~ASmartCompanionCharacter()
@@ -91,6 +96,9 @@ void ASmartCompanionCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ASmartCompanionCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &ASmartCompanionCharacter::TouchStopped);
 	PlayerInputComponent->BindAction("PrimaryAction", IE_Pressed, this, &ASmartCompanionCharacter::OnPrimaryAction);
+
+	PlayerInputComponent->BindAction("FirstPersonView", IE_Pressed, this, &ASmartCompanionCharacter::ActivateFirstPersonView);
+	PlayerInputComponent->BindAction("FirstPersonView", IE_Released, this, &ASmartCompanionCharacter::DeactivateFirstPersonView);
 }
 
 void ASmartCompanionCharacter::OnPrimaryAction()
@@ -153,6 +161,18 @@ void ASmartCompanionCharacter::MoveRight(float Value)
 void ASmartCompanionCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ASmartCompanionCharacter::ActivateFirstPersonView()
+{
+	FirstPersonCamera->SetActive(true);
+	FollowCamera->SetActive(false);
+}
+
+void ASmartCompanionCharacter::DeactivateFirstPersonView()
+{
+	FirstPersonCamera->SetActive(false);
+	FollowCamera->SetActive(true);
 }
 
 bool ASmartCompanionCharacter::GetBattleStateFlag()

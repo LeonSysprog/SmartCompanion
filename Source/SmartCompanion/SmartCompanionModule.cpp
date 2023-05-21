@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "SmartCompanion.h"
+#include "SmartCompanionModule.h"
 #include "Modules/ModuleManager.h"
 
 void SmartCompanionModule::StartupModule()
