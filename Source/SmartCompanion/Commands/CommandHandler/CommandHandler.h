@@ -4,11 +4,13 @@
 #include "HAL/Runnable.h"
 #include "../ICommand.h"
 #include "../../SmartModules/SpeechRecognitionModule/SpeechRecognitionModule.h"
+#include "../../SmartModules/ComputerVisionModule/ComputerVisionModule.h"
 
 class CommandHandler : public FRunnable
 {
 	public:
 		CommandHandler();
+		CommandHandler(UWorld* _worldContext);
 		~CommandHandler();
 
 		bool Init() override;
@@ -26,4 +28,5 @@ class CommandHandler : public FRunnable
 
 		TMap<FString, TSharedPtr<ICommand>> commandStorage;
 		SpeechRecognitionModule speechRecoginitonModule;
+		ComputerVisionModule computerVisionModule;
 };

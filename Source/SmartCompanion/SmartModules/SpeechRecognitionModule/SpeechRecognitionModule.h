@@ -19,7 +19,10 @@ class SpeechRecognitionModule : public ISmartModule
 		char data[4096];
 
 	public:
-		void Initialize() override;
-		void Run() override;
-		void Shutdown() override;
+		SpeechRecognitionModule();
+		SpeechRecognitionModule(UWorld* _worldContext);
+
+		void	Initialize()	override;
+		void*	Run()			override;
+		void	Shutdown()		override;
 };

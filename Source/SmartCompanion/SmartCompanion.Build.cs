@@ -39,6 +39,18 @@ public class SmartCompanion : ModuleRules
         CopyToBinaries("D:\\SmartCompanion\\SmartCompanion\\ThirdParty\\PortAudio\\Lib\\Release\\portaudio_x64.dll", Target);
     }
 
+    /*
+    public void LoadOpenCV(ReadOnlyTargetRules Target)
+    {
+        PublicAdditionalLibraries.Add("D:\\SmartCompanion\\SmartCompanion\\ThirdParty\\OpenCV\\lib\\opencv_world470.lib");
+        PublicIncludePaths.Add("D:\\SmartCompanion\\SmartCompanion\\ThirdParty\\OpenCV\\include");
+        RuntimeDependencies.Add("D:\\SmartCompanion\\SmartCompanion\\ThirdParty\\OpenCV\\bin\\opencv_world470.dll");
+        PublicDelayLoadDLLs.Add("opencv_world470.dll");
+
+        CopyToBinaries("D:\\SmartCompanion\\SmartCompanion\\ThirdParty\\OpenCV\\bin\\opencv_world470.dll", Target);
+    }
+    */
+
     public SmartCompanion(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
@@ -53,5 +65,6 @@ public class SmartCompanion : ModuleRules
 
         LoadVosk(Target);
         LoadPortAudio(Target);
+        //LoadOpenCV(Target);
     }
 }

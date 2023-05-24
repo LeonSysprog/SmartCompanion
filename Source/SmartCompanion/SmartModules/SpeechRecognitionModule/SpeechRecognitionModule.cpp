@@ -9,6 +9,15 @@
 simpleson перенёс из ThirdParty из-за ошибок линковки
 **/
 
+SpeechRecognitionModule::SpeechRecognitionModule()
+{
+}
+
+SpeechRecognitionModule::SpeechRecognitionModule(UWorld* _worldContext)
+{
+	worldContext = _worldContext;
+}
+
 void SpeechRecognitionModule::Initialize()
 {
 	model = vosk_model_new("E:\\Vosk\\vosk-model-small-en-us-0.15");
@@ -53,7 +62,7 @@ void SpeechRecognitionModule::Initialize()
 	}
 }
 
-void SpeechRecognitionModule::Run()
+void* SpeechRecognitionModule::Run()
 {
 	PaError err;
 
@@ -61,13 +70,13 @@ void SpeechRecognitionModule::Run()
 	if (err != paNoError && err != paInputOverflowed)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Pa_ReadStream: "), Pa_GetErrorText(err));
-		return;
+		return nullptr;
 	}
 
 	if (vosk_recognizer_accept_waveform(recognizer, data, sizeof(data)) == -1)
 	{
 		UE_LOG(LogTemp, Display, TEXT("vosk_recognizer_accept_waveform: error"));
-		return;
+		return nullptr;
 	}
 
 	auto resRegonition(vosk_recognizer_result(recognizer));
@@ -76,6 +85,9 @@ void SpeechRecognitionModule::Run()
 	FString textFString(resJSON.get("text").c_str());
 
 	UE_LOG(LogTemp, Display, TEXT("TEXT: %s"), *textFString);
+
+	TSharedPtr<FString> retText = MakeShared<FString>(textFString);
+	return retText.Get();
 }
 
 void SpeechRecognitionModule::Shutdown()

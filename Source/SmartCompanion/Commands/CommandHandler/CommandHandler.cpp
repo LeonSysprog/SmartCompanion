@@ -12,6 +12,14 @@ CommandHandler::CommandHandler()
 	thread = FRunnableThread::Create(this, TEXT("CommandHandlerThread"));
 }
 
+CommandHandler::CommandHandler(UWorld* _worldContext) : 
+	speechRecoginitonModule(_worldContext),
+	computerVisionModule(_worldContext)
+{
+	isActivateSpeechRecognition = false;
+	thread = FRunnableThread::Create(this, TEXT("CommandHandlerThread"));
+}
+
 CommandHandler::~CommandHandler()
 {
 	speechRecoginitonModule.Shutdown();
@@ -34,6 +42,7 @@ bool CommandHandler::Init()
 	commandStorage.Add(TEXT("kill blue"), TSharedPtr<ICommand>(new KillBlue()));
 
 	speechRecoginitonModule.Initialize();
+	computerVisionModule.Initialize();
 
 	return true;
 }

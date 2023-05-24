@@ -75,6 +75,9 @@ public:
 	void SmartActivate();
 	void SmartDeactivate();
 
+	void ActivateFirstPersonView();
+	void DeactivateFirstPersonView();
+
 protected:
 	/** Fires a projectile. */
 	void OnPrimaryAction();
@@ -111,11 +114,7 @@ protected:
 
 private:
 	//SpeechRecognitionModule speechRecognitionModule;
-	TSharedPtr<CommandHandler> commandHandler = MakeShared<CommandHandler>();
-
-private:
-	void ActivateFirstPersonView();
-	void DeactivateFirstPersonView();
+	TSharedPtr<CommandHandler> commandHandler = MakeShared<CommandHandler>(GetWorld());
 
 public:
 	/** Returns CameraBoom subobject **/

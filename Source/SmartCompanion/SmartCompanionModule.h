@@ -12,4 +12,5 @@ class SmartCompanionModule : public FDefaultGameModuleImpl
 
 		void* DynamicLibVoskHandle;
 		void* DynamicLibPortAudioHandle;
+		//void* DynamicLibOpenCVHandle;
 };
