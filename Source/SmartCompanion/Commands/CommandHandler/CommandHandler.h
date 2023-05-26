@@ -29,4 +29,6 @@ class CommandHandler : public FRunnable
 		TMap<FString, TSharedPtr<ICommand>> commandStorage;
 		SpeechRecognitionModule speechRecoginitonModule;
 		ComputerVisionModule computerVisionModule;
+
+		UWorld* worldContext;
 };

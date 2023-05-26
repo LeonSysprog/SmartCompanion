@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include <vector>
+#include <fstream>
 
 ComputerVisionModule::ComputerVisionModule()
 {
@@ -83,12 +84,13 @@ void ComputerVisionModule::postProcess()
         cv::rectangle(img, cv::Point(left, top), cv::Point(left + width, top + height), cv::Scalar(0, 255, 0), 3);
     }
 }
+*/
 
 float ComputerVisionModule::getRotateAngle()
 {
 	return 0.0f;
 }
-*/
+
 void ComputerVisionModule::Initialize()
 {
     /*
@@ -97,20 +99,37 @@ void ComputerVisionModule::Initialize()
     */
 }
 
-void* ComputerVisionModule::Run()
+float ComputerVisionModule::Run()
 {
 	// сделать скриншот и сохранить
 	//preProcess();
 	//postProcess();
 
+    UE_LOG(LogTemp, Log, TEXT("ComputerVisionModule::Run()"));
+
     auto controller = UGameplayStatics::GetPlayerController(worldContext, 0);
-    ((ASmartCompanionCharacter*)(controller->GetPawn()))->ActivateFirstPersonView();
+    auto character = (ASmartCompanionCharacter*)(controller->GetPawn());
+    character->ActivateFirstPersonView();
 
     system("python D:\\SmartCompanion\\SmartCompanion\\Script\\yolov8.py");
     UE_LOG(LogTemp, Log, TEXT("python script"));
-	return nullptr;
+
+    // read coords of center of detected image
+    std::ifstream coordsFile("D:\\SmartCompanion\\SmartCompanion\\Script\\coords.txt");
+    int x, y;
+    coordsFile >> x >> y;
+    coordsFile.close();
+
+	return (!x && !y) ? 0 : 1;
 }
 
 void ComputerVisionModule::Shutdown()
 {
 }
+
+/*
+void ComputerVisionModule::SetPrimaryModel(const std::string& modelName)
+{
+    modelName == "red" ? primaryModel = redModel : primaryModel = blueModel;
+}
+*/

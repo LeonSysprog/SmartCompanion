@@ -62,7 +62,7 @@ void SpeechRecognitionModule::Initialize()
 	}
 }
 
-void* SpeechRecognitionModule::Run()
+std::string SpeechRecognitionModule::Run()
 {
 	PaError err;
 
@@ -86,8 +86,7 @@ void* SpeechRecognitionModule::Run()
 
 	UE_LOG(LogTemp, Display, TEXT("TEXT: %s"), *textFString);
 
-	TSharedPtr<FString> retText = MakeShared<FString>(textFString);
-	return retText.Get();
+	return resJSON.get("text");
 }
 
 void SpeechRecognitionModule::Shutdown()

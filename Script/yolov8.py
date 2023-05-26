@@ -2,14 +2,18 @@ import pyautogui
 import cv2
 import numpy as np
 
-myScreenshot = pyautogui.screenshot()
-myScreenshot.save(r'D:\SmartCompanion\SmartCompanion\Screenshots\screen.png')
+#myScreenshot = pyautogui.screenshot()
+#myScreenshot.resize(640, 359)
+#myScreenshot.save(r'D:\SmartCompanion\SmartCompanion\Screenshots\screen.png')
 
 modelPath = 'C:\\Users\\sorok\\Downloads\\yolov8\\runs\\detect\\train\\weights\\best.onnx'
 
 net = cv2.dnn.readNet(modelPath)
-img = cv2.imread('D:\\SmartCompanion\\SmartCompanion\\Screenshots\\screen.png')
+img = cv2.imread('C:\\Users\\sorok\\Downloads\\yolov8\\red\\test\\images\\7.png')
+
 (height, width) = img.shape[:2]
+xFactor = width / 640
+yFactor = height / 640
 
 # Define the neural network input
 blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (640, 640), swapRB=True, crop=False)
@@ -30,8 +34,10 @@ for i in range(rows):
     (minScore, maxScore, minClassLoc, (x, maxClassIndex)) = cv2.minMaxLoc(classes_scores)
     if maxScore >= 0.25:
         box = [
-            outputs[0][i][0] - (0.5 * outputs[0][i][2]), outputs[0][i][1] - (0.5 * outputs[0][i][3]),
-            outputs[0][i][2], outputs[0][i][3]]
+            int((outputs[0][i][0] - (0.5 * outputs[0][i][2])) * xFactor), 
+            int((outputs[0][i][1] - (0.5 * outputs[0][i][3])) * yFactor),
+            int(outputs[0][i][2] * xFactor),
+            int(outputs[0][i][3] * yFactor)]
         boxes.append(box)
         scores.append(maxScore)
 
@@ -45,4 +51,11 @@ for i in range(len(result_boxes)):
     cv2.imshow("YOLOV8 Detection", img)
     while True:     
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            exit(0)       
+            # center coords
+            text = str((box[0] + box[2]) / 2) + ' ' + str((box[1] + box[3]) / 2)
+            with open('D:\\SmartCompanion\\SmartCompanion\\Script\\coords.txt', 'w') as f:
+                f.write(text)
+
+            exit(0)
+
+     

@@ -22,7 +22,8 @@ class SpeechRecognitionModule : public ISmartModule
 		SpeechRecognitionModule();
 		SpeechRecognitionModule(UWorld* _worldContext);
 
-		void	Initialize()	override;
-		void*	Run()			override;
-		void	Shutdown()		override;
+		void		Initialize()	override;
+		void		Shutdown()		override;
+
+		std::string Run();
 };

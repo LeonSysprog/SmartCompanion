@@ -1,8 +1,10 @@
 #include "CommandHandler.h"
-#include "../Hide/Hide.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "../../SmartCompanionCharacter.h"
 #include "../Kill/KillRed/KillRed.h"
 #include "../Kill/KillBlue/KillBlue.h"
-#include <GenericPlatform/GenericPlatformProcess.h>
 
 #pragma region Main Thread Code
 
@@ -12,7 +14,8 @@ CommandHandler::CommandHandler()
 	thread = FRunnableThread::Create(this, TEXT("CommandHandlerThread"));
 }
 
-CommandHandler::CommandHandler(UWorld* _worldContext) : 
+CommandHandler::CommandHandler(UWorld* _worldContext) :
+	worldContext(_worldContext),
 	speechRecoginitonModule(_worldContext),
 	computerVisionModule(_worldContext)
 {
@@ -37,7 +40,6 @@ bool CommandHandler::Init()
 {
 	UE_LOG(LogTemp, Display, TEXT("CommandHandler initialize"));
 
-	commandStorage.Add(TEXT("hide"), TSharedPtr<ICommand>(new Hide()));
 	commandStorage.Add(TEXT("kill red"), TSharedPtr<ICommand>(new KillRed()));
 	commandStorage.Add(TEXT("kill blue"), TSharedPtr<ICommand>(new KillBlue()));
 
@@ -51,7 +53,22 @@ uint32 CommandHandler::Run()
 {
 	while (bRunThread)
 	{
-		if (isActivateSpeechRecognition) speechRecoginitonModule.Run();
+		if (isActivateSpeechRecognition)
+		{
+			auto text = speechRecoginitonModule.Run();
+
+			auto pos = text.find("green");
+			if (pos != std::string::npos)
+			{
+				float angle = computerVisionModule.Run();
+
+				auto controller = UGameplayStatics::GetPlayerController(worldContext, 0);
+				auto character = (ASmartCompanionCharacter*)(controller->GetPawn());
+
+				auto rotation = FQuat(FRotator(0.0, angle, 0.0));
+				character->AddActorLocalRotation(rotation, false, 0, ETeleportType::None);
+			}
+		}
 	}
 
 	return 0;

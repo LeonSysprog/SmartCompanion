@@ -11,6 +11,7 @@ class ComputerVisionModule : public ISmartModule
 	private:
 		cv::Mat img;
 		cv::dnn::Net redModel, blueModel;
+		cv::dnn::Net primaryModel;
 		cv::Mat outputs;
 
 	private:
@@ -18,11 +19,18 @@ class ComputerVisionModule : public ISmartModule
 		void	postProcess();
 		float	getRotateAngle();
 	*/
+
+	private:
+		float	getRotateAngle();
+
 	public:
 		ComputerVisionModule();
 		ComputerVisionModule(UWorld* _worldContext);
 
 		void	Initialize()	override;
-		void*	Run()			override;
 		void	Shutdown()		override;
+
+		float	Run();
+
+		//void SetPrimaryModel(std::string modelName);
 };
