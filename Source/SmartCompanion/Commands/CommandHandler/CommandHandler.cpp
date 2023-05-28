@@ -40,8 +40,8 @@ bool CommandHandler::Init()
 {
 	UE_LOG(LogTemp, Display, TEXT("CommandHandler initialize"));
 
-	commandStorage.Add(TEXT("kill red"), TSharedPtr<ICommand>(new KillRed()));
-	commandStorage.Add(TEXT("kill blue"), TSharedPtr<ICommand>(new KillBlue()));
+	commandStorage["read"] = std::shared_ptr<ICommand>(new KillRed(computerVisionModule));
+	commandStorage["blue"] = std::shared_ptr<ICommand>(new KillBlue(computerVisionModule));
 
 	speechRecoginitonModule.Initialize();
 	computerVisionModule.Initialize();
@@ -57,16 +57,14 @@ uint32 CommandHandler::Run()
 		{
 			auto text = speechRecoginitonModule.Run();
 
-			auto pos = text.find("green");
-			if (pos != std::string::npos)
+			for (auto& [key, value] : commandStorage)
 			{
-				float angle = computerVisionModule.Run();
-
-				auto controller = UGameplayStatics::GetPlayerController(worldContext, 0);
-				auto character = (ASmartCompanionCharacter*)(controller->GetPawn());
-
-				auto rotation = FQuat(FRotator(0.0, angle, 0.0));
-				character->AddActorLocalRotation(rotation, false, 0, ETeleportType::None);
+				auto pos = text.find(key);
+				if (pos != std::string::npos)
+				{
+					value->Run();
+					break;
+				}
 			}
 		}
 	}

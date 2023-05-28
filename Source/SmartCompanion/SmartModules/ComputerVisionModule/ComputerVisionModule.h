@@ -3,6 +3,8 @@
 //#include "../../../../ThirdParty/OpenCV/include/opencv2/opencv.hpp"
 #include "../ISmartModule.h"
 
+#include <string>
+
 //#pragma comment(lib, "D:\\SmartCompanion\\SmartCompanion\\ThirdParty\\lib\\opencv_world470.lib")
 
 class ComputerVisionModule : public ISmartModule
@@ -19,9 +21,11 @@ class ComputerVisionModule : public ISmartModule
 		void	postProcess();
 		float	getRotateAngle();
 	*/
+	private:
+		const int xLength = 640;
 
 	private:
-		float	getRotateAngle();
+		float	getRotateAngle(int x0, int y0);
 
 	public:
 		ComputerVisionModule();
@@ -32,5 +36,6 @@ class ComputerVisionModule : public ISmartModule
 
 		float	Run();
 
-		//void SetPrimaryModel(std::string modelName);
+		void SetPrimaryModel(const std::string& modelName);
+		UWorld* GetWorldContext();
 };

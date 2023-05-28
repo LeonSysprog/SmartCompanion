@@ -78,10 +78,10 @@ public:
 	void ActivateFirstPersonView();
 	void DeactivateFirstPersonView();
 
-protected:
 	/** Fires a projectile. */
 	void OnPrimaryAction();
 
+protected:
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 

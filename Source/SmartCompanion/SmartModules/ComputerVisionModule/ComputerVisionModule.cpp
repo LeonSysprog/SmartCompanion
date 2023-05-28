@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <fstream>
+#include <cmath>
 
 ComputerVisionModule::ComputerVisionModule()
 {
@@ -17,13 +18,13 @@ ComputerVisionModule::ComputerVisionModule(UWorld* _worldContext)
 }
 
 /*
-void ComputerVisionModule::preProcess(cv::dnn::Net& net)
+void ComputerVisionModule::preProcess()
 {
 	cv::Mat blob;
 	cv::dnn::blobFromImage(img, blob, 1. / 255., cv::Size(640, 640), cv::Scalar(), true, false);
 
-	net.setInput(blob);
-	outputs = net.forward();
+	primaryModel.setInput(blob);
+	outputs = primaryModel.forward();
 }
 
 void ComputerVisionModule::postProcess()
@@ -39,13 +40,6 @@ void ComputerVisionModule::postProcess()
 
     for (int i = 0; i < rows; ++i)
     {
-        std::cout << data[0] << std::endl;
-        std::cout << data[1] << std::endl;
-        std::cout << data[2] << std::endl;
-        std::cout << data[3] << std::endl;
-        std::cout << data[4] << std::endl;
-        std::cout << std::endl;
-
         double confidence = data[4];
 
         if (confidence < 0.25) continue;
@@ -86,33 +80,30 @@ void ComputerVisionModule::postProcess()
 }
 */
 
-float ComputerVisionModule::getRotateAngle()
+float ComputerVisionModule::getRotateAngle(int x0, int y0)
 {
-	return 0.0f;
+    float alpha = atan((xLength / 2 - x0) / y0);
+    if (x0 < xLength) alpha *= -1;
+    return alpha / PI;
 }
 
 void ComputerVisionModule::Initialize()
 {
     /*
-	redModel = cv::dnn::readNet("..\\..\\..\\..\\ThirdParty\\Models\\OpenCV\\yolov8_custom.onnx");
-	blueModel = cv::dnn::readNet("..\\..\\..\\..\\ThirdParty\\Models\\OpenCV\\yolov8_custom.onnx");
+    * заменить на абсолютные
+	redModel = cv::dnn::readNet("..\\..\\..\\..\\ThirdParty\\Models\\OpenCV\\redModel.onnx");
+	blueModel = cv::dnn::readNet("..\\..\\..\\..\\ThirdParty\\Models\\OpenCV\\blueModel.onnx");
     */
 }
 
 float ComputerVisionModule::Run()
 {
 	// сделать скриншот и сохранить
-	//preProcess();
-	//postProcess();
-
-    UE_LOG(LogTemp, Log, TEXT("ComputerVisionModule::Run()"));
-
     auto controller = UGameplayStatics::GetPlayerController(worldContext, 0);
     auto character = (ASmartCompanionCharacter*)(controller->GetPawn());
     character->ActivateFirstPersonView();
 
     system("python D:\\SmartCompanion\\SmartCompanion\\Script\\yolov8.py");
-    UE_LOG(LogTemp, Log, TEXT("python script"));
 
     // read coords of center of detected image
     std::ifstream coordsFile("D:\\SmartCompanion\\SmartCompanion\\Script\\coords.txt");
@@ -120,16 +111,20 @@ float ComputerVisionModule::Run()
     coordsFile >> x >> y;
     coordsFile.close();
 
-	return (!x && !y) ? 0 : 1;
+	return (!x && !y) ? 0 : getRotateAngle(x, y);
+}
+
+void ComputerVisionModule::SetPrimaryModel(const std::string& modelName)
+{
+    //modelName == "red" ? primaryModel = redModel : primaryModel = blueModel;
+    UE_LOG(LogTemp, Display, TEXT("SetPrimaryModel"));
+}
+
+UWorld* ComputerVisionModule::GetWorldContext()
+{
+    return worldContext;
 }
 
 void ComputerVisionModule::Shutdown()
 {
 }
-
-/*
-void ComputerVisionModule::SetPrimaryModel(const std::string& modelName)
-{
-    modelName == "red" ? primaryModel = redModel : primaryModel = blueModel;
-}
-*/

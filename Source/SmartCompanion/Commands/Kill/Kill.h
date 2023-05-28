@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../ICommand.h"
 #include "../../SmartModules/ComputerVisionModule/ComputerVisionModule.h"
 
-class Kill : public ICommand
+class Kill
 {
 	protected:
 		ComputerVisionModule computerVisionModule;
@@ -12,5 +11,5 @@ class Kill : public ICommand
 		Kill();
 		Kill(ComputerVisionModule& _computerVisionModule);
 
-		void Run() override;
+		void GeneralRun();
 };

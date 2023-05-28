@@ -6,6 +6,10 @@
 #include "../../SmartModules/SpeechRecognitionModule/SpeechRecognitionModule.h"
 #include "../../SmartModules/ComputerVisionModule/ComputerVisionModule.h"
 
+#include <map>
+#include <string>
+#include <memory>
+
 class CommandHandler : public FRunnable
 {
 	public:
@@ -26,7 +30,7 @@ class CommandHandler : public FRunnable
 
 		bool isActivateSpeechRecognition;
 
-		TMap<FString, TSharedPtr<ICommand>> commandStorage;
+		std::map<std::string, std::shared_ptr<ICommand>> commandStorage;
 		SpeechRecognitionModule speechRecoginitonModule;
 		ComputerVisionModule computerVisionModule;
 

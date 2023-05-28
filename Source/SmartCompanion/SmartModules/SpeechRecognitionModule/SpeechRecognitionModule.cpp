@@ -2,8 +2,6 @@
 #include "simpleson/json.h"
 #include <Logging/LogMacros.h>
 
-#include <memory>
-
 /**
 @Brief
 simpleson перенёс из ThirdParty из-за ошибок линковки

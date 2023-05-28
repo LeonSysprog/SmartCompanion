@@ -1,8 +1,9 @@
 #pragma once
 
+#include "../../ICommand.h"
 #include "../Kill.h"
 
-class KillRed : public Kill
+class KillRed : public ICommand, public Kill
 {
 	public:
 		KillRed();

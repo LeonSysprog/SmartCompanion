@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "TP_WeaponComponent.h"
 #include "SmartCompanionCharacter.h"
 #include "TP_Projectile.h"

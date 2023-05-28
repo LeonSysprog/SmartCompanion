@@ -52,7 +52,7 @@ for i in range(len(result_boxes)):
     while True:     
         if cv2.waitKey(1) & 0xFF == ord('q'):
             # center coords
-            text = str((box[0] + box[2]) / 2) + ' ' + str((box[1] + box[3]) / 2)
+            text = str(int((box[0] + box[2]) / 2)) + '\n' + str(int((box[1] + box[3]) / 2))
             with open('D:\\SmartCompanion\\SmartCompanion\\Script\\coords.txt', 'w') as f:
                 f.write(text)
 

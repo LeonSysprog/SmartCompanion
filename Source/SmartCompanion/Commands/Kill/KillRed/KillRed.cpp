@@ -10,5 +10,6 @@ KillRed::KillRed(ComputerVisionModule& _computerVisionModule) : Kill(_computerVi
 
 void KillRed::Run()
 {
-	computerVisionModule;
+	computerVisionModule.SetPrimaryModel("red");
+	GeneralRun();
 }
